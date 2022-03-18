@@ -1,0 +1,2 @@
+DEPLOY k2_ws WITH JAR ‘C:\Users\DaniellaDavis\Documents\K2View Fabric   Studio\Projects\Broadway_Project\Implementation\LogicalUnits\k2_ws\ludb.jar’ ZIP_FILE ‘C:\Users\DaniellaDavis\Documents\K2View Fabric     Studio\Projects\Broadway_Project\Implementation\LogicalUnits\k2_ws\ludbXMLs.zip’ WS_METHODS ‘wsName’
+You can run the command: list WS; (to see all WS that where deployed).
