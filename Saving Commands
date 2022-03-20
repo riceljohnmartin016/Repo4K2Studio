@@ -1,2 +1,9 @@
 DEPLOY k2_ws WITH JAR ‘C:\Users\DaniellaDavis\Documents\K2View Fabric   Studio\Projects\Broadway_Project\Implementation\LogicalUnits\k2_ws\ludb.jar’ ZIP_FILE ‘C:\Users\DaniellaDavis\Documents\K2View Fabric     Studio\Projects\Broadway_Project\Implementation\LogicalUnits\k2_ws\ludbXMLs.zip’ WS_METHODS ‘wsName’
 You can run the command: list WS; (to see all WS that where deployed).
+
+
+
+String sql ="SELECT cust.FIRST_NAME, cust.LAST_NAME, cont.CONTRACT_ID, cont.CONTRACT_DESCRIPTION, sub.SUBSCRIBER_ID, sub.MSISDN, sub.IMSI, sub.SIM, sub.SUBSCRIBER_TYPE, sub.VIP_STATUS FROM Customer.CUSTOMER cust, Customer.CONTRACT cont, Customer.SUBSCRIBER sub WHERE cont.ASSOCIATED_LINE_FMT=sub.MSISDN and sub.VIP_STATUS=?";
+Db.Rows rows = ludb("Customer", i_id).fetch(sql, i_vipStatus);
+log.info("WS executed Successfully for Customer ID:" + i_id);
+return rows;
