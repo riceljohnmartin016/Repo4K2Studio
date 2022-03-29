@@ -1,0 +1,283 @@
+{
+    "levels": [
+        {
+            "stages": [
+                {
+                    "name": "Stage 1",
+                    "dependsOnList": [],
+                    "isLast": 0,
+                    "actors": [
+                        {
+                            "name": "CRM_DB Data Source",
+                            "remark": "Getting the count for the all cases.status from the table cases that is group in cases.status",
+                            "actorType": {
+                                "parentType": "DbCommand",
+                                "inputs": [
+                                    {
+                                        "name": "interface",
+                                        "const": "CRM_DB"
+                                    },
+                                    {
+                                        "name": "sql",
+                                        "const": "select Count (*) as Number_of_cases,\r\ncases.status\r\nfrom cases\r\nGroup by CASES.status"
+                                    }
+                                ],
+                                "outputs": [
+                                    {
+                                        "name": "result",
+                                        "schema": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "NUMBER_OF_CASES": {
+                                                        "type": "integer"
+                                                    },
+                                                    "STATUS": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "stages": [
+                {
+                    "name": "Stage 2",
+                    "dependsOnList": [],
+                    "isLast": 0,
+                    "actors": [
+                        {
+                            "name": "Create CustomerList_csv File ",
+                            "remark": "Creating a .csv file",
+                            "actorType": {
+                                "parentType": "CsvBuilder",
+                                "inputs": [],
+                                "outputs": []
+                            }
+                        },
+                        {
+                            "name": "Count1",
+                            "remark": "Counting all the ouput result of our db query in the first stage.",
+                            "actorType": {
+                                "parentType": "Count",
+                                "inputs": [],
+                                "outputs": [
+                                    {
+                                        "name": "value",
+                                        "schema": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "stages": [
+                {
+                    "name": "Stage 3",
+                    "dependsOnList": [],
+                    "isLast": 1,
+                    "actors": [
+                        {
+                            "name": "Write_customer_list_as_string",
+                            "remark": "Write a customer_list.csv and save it on our local file system directory. Also, I set append: boolean to false because i don't want to append every result on .csv file that I created ",
+                            "actorType": {
+                                "parentType": "FileWrite",
+                                "inputs": [
+                                    {
+                                        "name": "interface",
+                                        "const": "localFileSystem"
+                                    },
+                                    {
+                                        "name": "path",
+                                        "const": "customer_list.csv"
+                                    }
+                                ],
+                                "outputs": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "stages": [
+                {
+                    "name": "Stage 4",
+                    "dependsOnList": [
+                        "Stage 3"
+                    ],
+                    "isLast": 0,
+                    "actors": [
+                        {
+                            "name": "GreaterThanEquals1",
+                            "remark": "This is actor in stage 4 is doing a condition where if I input a number where the number result is greater than or equal to 4 then it will proceed to our stage 5 else condition. So for example I type 5 in input of Greater than equals 1 condition. Since 5 is greater than or equals to value of the result which is 4 then it will proceed to the stage 5. It means that from 0 - 4 input will proceed to stage 6.",
+                            "condition": "result",
+                            "actorType": {
+                                "parentType": "GreaterThanEquals",
+                                "inputs": [
+                                    {
+                                        "name": "b",
+                                        "const": 4
+                                    }
+                                ],
+                                "outputs": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Stage 5",
+                    "dependsOnList": [
+                        "Stage 3"
+                    ],
+                    "isLast": 0,
+                    "isTransactional": false,
+                    "hasElse": true,
+                    "actors": [
+                        {
+                            "name": "Else Condition",
+                            "remark": "Else condition where if the input is greater than or equal to value result it will proceed to this stage",
+                            "actorType": {
+                                "parentType": "Const",
+                                "inputs": [
+                                    {
+                                        "name": "value",
+                                        "schema": {
+                                            "type": "string"
+                                        },
+                                        "const": "Error - there are not enough records in the list"
+                                    }
+                                ],
+                                "outputs": [
+                                    {
+                                        "name": "value",
+                                        "schema": {
+                                            "type": "string"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "stages": [
+                {
+                    "name": "Stage 6",
+                    "dependsOnList": [
+                        "Stage 4"
+                    ],
+                    "isLast": 0,
+                    "isTransactional": false,
+                    "actors": [
+                        {
+                            "name": "Logger1",
+                            "remark": "Printing the number of record in the list",
+                            "actorType": {
+                                "parentType": "Logger",
+                                "inputs": [
+                                    {
+                                        "name": "message",
+                                        "const": "There are ${0} records in the list."
+                                    },
+                                    {
+                                        "name": "level",
+                                        "const": "info"
+                                    }
+                                ],
+                                "outputs": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Stage 7",
+                    "dependsOnList": [
+                        "Stage 5"
+                    ],
+                    "isLast": 0,
+                    "isTransactional": false,
+                    "actors": [
+                        {
+                            "name": "Logger2",
+                            "remark": "A message show an error.",
+                            "actorType": {
+                                "parentType": "Logger",
+                                "inputs": [],
+                                "outputs": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "connections": [
+        {
+            "leftPort": {
+                "actor": "CRM_DB Data Source",
+                "name": "result"
+            },
+            "rightPort": {
+                "actor": "Create CustomerList_csv File ",
+                "name": "maps"
+            },
+            "iterate": "Iterate"
+        },
+        {
+            "leftPort": {
+                "actor": "Create CustomerList_csv File ",
+                "name": "csv"
+            },
+            "rightPort": {
+                "actor": "Write_customer_list_as_string",
+                "name": "stream"
+            }
+        },
+        {
+            "leftPort": {
+                "actor": "Count1",
+                "name": "value"
+            },
+            "rightPort": {
+                "actor": "GreaterThanEquals1",
+                "name": "a"
+            }
+        },
+        {
+            "leftPort": {
+                "actor": "Count1",
+                "name": "value"
+            },
+            "rightPort": {
+                "actor": "Logger1",
+                "name": "params"
+            }
+        },
+        {
+            "leftPort": {
+                "actor": "Else Condition",
+                "name": "value"
+            },
+            "rightPort": {
+                "actor": "Logger2",
+                "name": "message"
+            }
+        }
+    ]
+}
