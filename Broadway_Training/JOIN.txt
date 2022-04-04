@@ -1,0 +1,51 @@
+Select CUSTOMER.CUSTOMER_ID,
+  ADDRESS.CUSTOMER_ID As ADDRESS_CUSTOMER_ID,
+  CUSTOMER.SSN,
+  CUSTOMER.FIRST_NAME,
+  CUSTOMER.LAST_NAME,
+  ADDRESS.CITY,
+  ADDRESS.STATE,
+  ADDRESS.COUNTRY,
+  SUBSCRIBER.SIM,
+  SUBSCRIBER.VIP_STATUS
+From main.CUSTOMER,
+  main.ADDRESS,
+  main.SUBSCRIBER
+Where SUBSCRIBER.VIP_STATUS ="Gold";
+
+
+
+
+Select CUSTOMER.CUSTOMER_ID,
+  CUSTOMER.SSN,
+  CUSTOMER.FIRST_NAME,
+  CUSTOMER.LAST_NAME,
+  ADDRESS.CITY,
+  ADDRESS.STATE,
+  ADDRESS.COUNTRY
+From main.CUSTOMER,
+  main.ADDRESS lIMIT 100;
+  
+  
+select Count (*) as Number_of_cases,
+cases.status
+from cases
+Group by CASES.status
+
+
+git branch -m main branch_broadway
+git fetch origin
+git branch -u origin/branch_broadway branch_broadway
+git remote set-head origin -a
+
+
+There are ${NUM_OF_CASES} cases with Status = ${CASE_STS}
+
+Select * From ACTIVITY Where CUSTOMER_ID = ${cust_id}
+
+
+self.count +=1;
+if (self.count >= 3) {
+    contextLoop.stop();
+}
+self.count;
